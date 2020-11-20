@@ -55,7 +55,7 @@ var newData = L.tileLayer.wms("https://omooyegis.ngrok.io/geoserver/wms?", {
 
  // Grs data point
 
-var SamplePoints= $.ajax('https://omooyegis.ngrok.io/geoserver/wfs?',{
+var SamplePoints= fetch('https://omooyegis.ngrok.io/geoserver/wfs?',{
         type: 'GET',
         data: {
             service: 'WFS',
@@ -66,12 +66,8 @@ var SamplePoints= $.ajax('https://omooyegis.ngrok.io/geoserver/wfs?',{
             outputFormat: 'text/javascript'
             },
         dataType: 'jsonp',
-        jsonpCallback:'callback:loadFeatures',
         jsonp:'format_options'
-        });
- function loadFeatures(points){
-   	L.geoJson(points).addTo(map);
- }
+        }).then(res=>res.json).then(points=>L.geoJson(points).addTo(map))
 
 
 //Updating all layers in the layers panel 
