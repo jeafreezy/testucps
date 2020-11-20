@@ -42,6 +42,13 @@ var UCPSRaster = L.tileLayer.wms("https://omooyegis.ngrok.io/geoserver/wms?", {
     attribution: "NGSA Uranium Count Per Seconds"
 });
 
+// NDGS DATA 3
+var newData = L.tileLayer.wms("https://omooyegis.ngrok.io/geoserver/wms?", {
+    layers: 'WEBGIS:New_data',
+    format: 'image/png',
+    transparent: true,
+    attribution: ""
+});
 
 
 //Updating all layers in the layers panel 
@@ -49,6 +56,8 @@ var UCPSRaster = L.tileLayer.wms("https://omooyegis.ngrok.io/geoserver/wms?", {
 var baseMaps = {
     "Uranium CPS Raster": UCPSRaster,
     "Uranium CPS Contour": UCPSContour,
+    "Sample Points":SamplePoints,
+    "New Data": newData,
     "Satellite Imagery": googleSat,
     "Terrain":googleTerrain
 };
@@ -57,21 +66,22 @@ L.control.layers(null,baseMaps).addTo(map);
 
  
 
-//  // Nigeria WFS for feature querying
-// var ajax= $.ajax('http://localhost:8080/geoserver/webgis/wfs',{
-//         type: 'GET',
-//         data: {
-//             service: 'WFS',
-//             version: '1.0.0',
-//             request: 'GetFeature',
-//             typename: 'webgis:towns_geoJSON',
-//             srsname: 'EPSG:4326',
-//             outputFormat: 'text/javascript'
-//             },
-//         dataType: 'jsonp',
-//         jsonpCallback:'callback:loadFeatures',
-//         jsonp:'format_options'
-//         });
-//  function loadFeatures(e){
-//    	L.geoJson(e).addTo(map);
-//  }
+ // Grs data point
+
+var SamplePoints= $.ajax('https://omooyegis.ngrok.io/geoserver/wfs?',{
+        type: 'GET',
+        data: {
+            service: 'WFS',
+            version: '1.0.0',
+            request: 'GetFeature',
+            typename: 'WEBGIS:grsamplepointfile1geojson',
+            srsname: 'EPSG:4326',
+            outputFormat: 'text/javascript'
+            },
+        dataType: 'jsonp',
+        jsonpCallback:'callback:loadFeatures',
+        jsonp:'format_options'
+        });
+ function loadFeatures(points){
+   	L.geoJson(points).addTo(map);
+ }
