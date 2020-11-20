@@ -51,19 +51,6 @@ var newData = L.tileLayer.wms("https://omooyegis.ngrok.io/geoserver/wms?", {
 });
 
 
-//Updating all layers in the layers panel 
-
-var baseMaps = {
-    "Uranium CPS Raster": UCPSRaster,
-    "Uranium CPS Contour": UCPSContour,
-    "Sample Points":SamplePoints,
-    "New Data": newData,
-    "Satellite Imagery": googleSat,
-    "Terrain":googleTerrain
-};
-
-L.control.layers(null,baseMaps).addTo(map);
-
  
 
  // Grs data point
@@ -85,3 +72,17 @@ var SamplePoints= $.ajax('https://omooyegis.ngrok.io/geoserver/wfs?',{
  function loadFeatures(points){
    	L.geoJson(points).addTo(map);
  }
+
+
+//Updating all layers in the layers panel 
+
+var baseMaps = {
+    "Uranium CPS Raster": UCPSRaster,
+    "Uranium CPS Contour": UCPSContour,
+    "Sample Points":SamplePoints,
+    "New Data": newData,
+    "Satellite Imagery": googleSat,
+    "Terrain":googleTerrain
+};
+
+L.control.layers(null,baseMaps).addTo(map);
