@@ -42,41 +42,60 @@ var UCPSRaster = L.tileLayer.wms("https://omooyegis.ngrok.io/geoserver/wms?", {
     attribution: "NGSA Uranium Count Per Seconds"
 });
 
-// NDGS DATA 3
-var newData = L.tileLayer.wms("https://omooyegis.ngrok.io/geoserver/wms?", {
-    layers: 'WEBGIS:New_data',
-    format: 'image/png',
-    transparent: true,
-    attribution: ""
-});
 
 
  
 
  // Grs data point
 
-var SamplePoints= fetch('https://omooyegis.ngrok.io/geoserver/wfs?',{
-        type: 'GET',
-        data: {
-            service: 'WFS',
-            version: '1.0.0',
-            request: 'GetFeature',
-            typename: 'WEBGIS:grsamplepointfile1geojson',
-            srsname: 'EPSG:4326',
-            outputFormat: 'text/javascript'
-            },
-        dataType: 'jsonp',
-        jsonp:'format_options'
-        }).then(res=>res.json).then(points=>L.geoJson(points).addTo(map))
+
+var owsrootUrl = 'https://omooyegis.ngrok.io/geoserver/ows';
+
+var defaultParameters = {
+    service : 'WFS',
+    version : '2.0',
+    request : 'GetFeature',
+    typeName : 'WEBGIS:grsamplepointfile1geojson',
+    outputFormat : 'application/json',
+    srsName : 'EPSG:4326'
+};
+// http://omooyegis.ngrok.io/geoserver/WEBGIS/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WEBGIS%3Agrsamplepointfile1geojson&maxFeatures=50&outputFormat=application%2Fjson
+var parameters = L.Util.extend(defaultParameters);
+var URL = owsrootUrl + L.Util.getParamString(parameters);
+
+let WFSLayer;
 
 
+var ajax = $.ajax({
+    url : URL,
+    dataType : 'json',
+    jsonpCallback : 'getJson',
+    success : handlegeoJSON
+});
+
+function handlegeoJSON (response){
+
+   var WFSLayer = L.geoJson(response, {
+        style: function (feature) {
+            return {
+                stroke: false,
+                fillColor: 'FFFFFF',
+                fillOpacity: 1
+            }
+        },
+        onEachFeature: function (feature,layer){
+            
+            layer.bindPopup(JSON.stringify(feature.properties))
+                
+        }
+        
+    }).addTo(map)
+}
 //Updating all layers in the layers panel 
 
 var baseMaps = {
     "Uranium CPS Raster": UCPSRaster,
     "Uranium CPS Contour": UCPSContour,
-    "Sample Points":SamplePoints,
-    "New Data": newData,
     "Satellite Imagery": googleSat,
     "Terrain":googleTerrain
 };
