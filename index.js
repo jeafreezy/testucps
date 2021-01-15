@@ -63,41 +63,62 @@ var defaultParameters = {
 var parameters = L.Util.extend(defaultParameters);
 var URL = owsrootUrl + L.Util.getParamString(parameters);
 
-let WFSLayer;
+async function getJson(url) {
+    let response = await fetch(url);
+    let data = await response.json()
+    return data;
+}
 
+async function main() {
 
-var ajax = $.ajax({
-    url : URL,
-    dataType : 'json',
-    jsonpCallback : 'getJson',
-    success : handlegeoJSON
-});
+    const jsondata = await getJson(URL)
 
-function handlegeoJSON (response){
-
-   var WFSLayer = L.geoJson(response, {
-        style: function (feature) {
-            return {
-                stroke: false,
-                fillColor: 'FFFFFF',
-                fillOpacity: 1
-            }
-        },
+    //Updating all layers in the layers panel 
+    var WFSLayer = L.geoJson(jsondata, {
+        style:{
+                "stroke": false,
+                "fillColor": 'FFFFFF',
+                "fillOpacity": 1
+            },
         onEachFeature: function (feature,layer){
-            
-            layer.bindPopup(JSON.stringify(feature.properties))
+
+            const properties = feature.properties;
+
+            for(property in properties){
+
+                const popUpStyle=
+                `
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>${property}</td>
+                                <td>${properties[property]}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                `;
+                layer.bindPopup(popUpStyle);
+            }
+
+          
                 
         }
-        
-    }).addTo(map)
+    });
+
+    var baseMaps = {
+        "Uranium CPS Raster": UCPSRaster,
+        "Uranium CPS Contour": UCPSContour,
+        "Points": WFSLayer,
+        "Satellite Imagery": googleSat,
+        "Terrain":googleTerrain
+    };
+
+    L.control.layers(null,baseMaps).addTo(map);
 }
-//Updating all layers in the layers panel 
 
-var baseMaps = {
-    "Uranium CPS Raster": UCPSRaster,
-    "Uranium CPS Contour": UCPSContour,
-    "Satellite Imagery": googleSat,
-    "Terrain":googleTerrain
-};
 
-L.control.layers(null,baseMaps).addTo(map);
+
+main()
+
+
+
