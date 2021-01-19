@@ -71,7 +71,7 @@ async function getJson(url) {
 async function main() {
 
     const jsondata = await getJson(URL)
-    console.log(jsondata)
+  
     //Updating all layers in the layers panel 
     var WFSLayer = L.geoJson(jsondata, {
         style:{
