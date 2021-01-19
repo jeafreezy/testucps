@@ -44,7 +44,6 @@ var UCPSRaster = L.tileLayer.wms("https://omooyegis.ngrok.io/geoserver/wms?", {
 
 
 
- 
 
  // Grs data point
 
@@ -72,7 +71,7 @@ async function getJson(url) {
 async function main() {
 
     const jsondata = await getJson(URL)
-
+    console.log(jsondata)
     //Updating all layers in the layers panel 
     var WFSLayer = L.geoJson(jsondata, {
         style:{
@@ -137,7 +136,7 @@ async function main() {
 }
 
 
-
+main()
 
 
 
