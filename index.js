@@ -44,6 +44,7 @@ var UCPSRaster = L.tileLayer.wms("https://omooyegis.ngrok.io/geoserver/wms?", {
 
 
 
+ 
 
  // Grs data point
 
@@ -71,7 +72,7 @@ async function getJson(url) {
 async function main() {
 
     const jsondata = await getJson(URL)
-  
+
     //Updating all layers in the layers panel 
     var WFSLayer = L.geoJson(jsondata, {
         style:{
@@ -123,20 +124,18 @@ async function main() {
             layer.bindPopup(table);       
         }
     });
-    var baseMaps = {
-        "Uranium CPS Raster": UCPSRaster,
-        "Uranium CPS Contour": UCPSContour,
-        "Satellite Imagery": googleSat,
-        "Points":WFSLayer,
-        "Terrain":googleTerrain
-    };
-    
-    L.control.layers(null,baseMaps).addTo(map);
-   
+    L.control.addOverlay(WFSLayer,'Points')
 }
 
 
-main()
+var baseMaps = {
+    "Uranium CPS Raster": UCPSRaster,
+    "Uranium CPS Contour": UCPSContour,
+    "Satellite Imagery": googleSat,
+    "Terrain":googleTerrain
+};
+
+L.control.layers(null,baseMaps).addTo(map);
 
 
 
