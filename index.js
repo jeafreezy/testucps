@@ -83,42 +83,60 @@ async function main() {
         onEachFeature: function (feature,layer){
 
             const properties = feature.properties;
+            const table = document.getElementById('table');
+            let content =table.innerHTML;
+            content += `
+                        <tr>
+                            <td>${properties.Galtm_sec}</td>
+                        </tr>
+                        <tr>
+                            <td>${properties.Gst_nut}</td>
+                        </tr>
+                        <tr>
+                            <td>${properties.TC_cps}</td>
+                        </tr>
+                        <tr>
+                            <td>${properties.K_PPT}</td>
+                        </tr>
+                        <tr>
+                            <td>${properties.UR_PPM}</td>
+                        </tr>
+                        <tr>
+                            <td>${properties.Dose_nGy}</td>
+                        </tr>
+                        <tr>
+                            <td>${properties.K_cps}</td>
+                        </tr>
+                        <tr>
+                            <td>${properties.Th_cps}</td>
+                        </tr>
+                        <tr>
+                            <td>${properties.CS_cps}</td>
+                        </tr>
+                        <tr>
+                            <td>${properties.ThPeak}</td>
+                        </tr>
 
-            for(property in properties){
+                        `;
+            table.innerHTML = content;
 
-                const popUpStyle=
-                `
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td>${property}</td>
-                                <td>${properties[property]}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                `;
-                layer.bindPopup(popUpStyle);
-            }
-
-          
-                
+            table.style.display='block';
+            layer.bindPopup(table);       
         }
     });
-
-    var baseMaps = {
-        "Uranium CPS Raster": UCPSRaster,
-        "Uranium CPS Contour": UCPSContour,
-        "Points": WFSLayer,
-        "Satellite Imagery": googleSat,
-        "Terrain":googleTerrain
-    };
-
-    L.control.layers(null,baseMaps).addTo(map);
+    L.control.addOverlay(WFSLayer,'Points')
 }
 
 
+var baseMaps = {
+    "Uranium CPS Raster": UCPSRaster,
+    "Uranium CPS Contour": UCPSContour,
+    "Satellite Imagery": googleSat,
+    "Terrain":googleTerrain
+};
 
-main()
+L.control.layers(null,baseMaps).addTo(map);
+
 
 
 
