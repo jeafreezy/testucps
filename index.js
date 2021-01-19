@@ -124,18 +124,20 @@ async function main() {
             layer.bindPopup(table);       
         }
     });
-    L.control.addOverlay(WFSLayer,'Points')
+    var baseMaps = {
+        "Uranium CPS Raster": UCPSRaster,
+        "Uranium CPS Contour": UCPSContour,
+        "Satellite Imagery": googleSat,
+        "Points":WFSLayer,
+        "Terrain":googleTerrain
+    };
+    
+    L.control.layers(null,baseMaps).addTo(map);
+   
 }
 
 
-var baseMaps = {
-    "Uranium CPS Raster": UCPSRaster,
-    "Uranium CPS Contour": UCPSContour,
-    "Satellite Imagery": googleSat,
-    "Terrain":googleTerrain
-};
 
-L.control.layers(null,baseMaps).addTo(map);
 
 
 
